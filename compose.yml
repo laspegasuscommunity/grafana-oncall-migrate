@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  oncall-migrate:
+    container_name: oncall-migrate
+    command: python manage.py migrate --noinput
+    env_file: grafana-oncall.env
+    deploy:
+      restart_policy:
+        condition: always
+        delay: 5s
+    image: grafana/oncall:latest
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+      traefik.enable: "false"
+    volumes:
+      - "oncall_data:/var/lib/oncall"
+
+volumes:
+  oncall_data:
+    driver: local
+
+networks:
+  default:
+    external: true
+    name: $NETWORK
